@@ -64,14 +64,24 @@ t = 0
 with open("points.json") as fp:
     points = json.load(fp)
 
-def map(val):
-    scl = min(dimensions)
-    return scl * (val + 1) / 2
+def map(point):
+    x = y = 0
+    if dimensions[0] < dimensions[1]:
+        scl = dimensions[0]
+        y += (dimensions[1] - dimensions[0]) / 2
 
-skip = 4
+    else:
+        scl = dimensions[1]
+        x += (dimensions[0] - dimensions[1]) / 2
+
+    x += scl * (point[0] + 1) / 2 - dimensions[0] / 2
+    y += scl * (point[1] + 1) / 2 - dimensions[1] / 2
+    return [x, y]
+
+skip = 1
 points = [points[i] for i in range(0, len(points), skip)]
 print(len(points), "points")
-points = [[map(i[0]) - dimensions[0] / 2, map(i[1]) - dimensions[1] / 2] for i in points]
+points = [map(i) for i in points]
 points = discrete_fourier_transform([complex(i[0], i[1]) for i in points])
 points = sorted(points, key=lambda x: -abs(x[1]))
 # print(points)

@@ -11,13 +11,17 @@ def drag(e):
 
 
 def end_drag(e):
-    def map(val):
+    def map(point):
+        x = y = 0
         scl = min(dimensions)
-        return 2 * (val / scl) - 1
+
+        x = 2 * (point[0] - dimensions[0] / 2) / scl
+        y = 2 * (point[1] - dimensions[1] / 2) / scl
+
+        return [x, y]
 
     with open("points.json", "w+") as fp:
-        out = [{"x": i[0], "y": i[1]} for i in points]
-        json.dump([[map(i[0]), map(i[1])] for i in points], fp, separators=(",", ":"))
+        json.dump([map(i) for i in points], fp, separators=(",", ":"))
 
 
 def draw_loop():
